@@ -54,8 +54,7 @@ jobs:
         yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "ndk;21.4.7075529"
 
     - name: Configure Buildozer
-      if: steps.cache-android-sdk.outputs.cache-hit != 'true'
-      run: |
+      run: 
         mkdir -p ~/.buildozer
         echo "[global]" > ~/.buildozer/default.spec
         echo "android.sdk = $ANDROID_HOME" >> ~/.buildozer/default.spec
