@@ -1,0 +1,96 @@
+<BoxLayout>:
+    orientation: 'vertical'
+    padding: 20
+    spacing: 20
+    canvas.before:
+        Color:
+            rgba: 0.2, 0.4, 0.8, 1  # Bleu clair (RGBA)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    Label:
+        text: 'Configuration HOROLAJ'
+        font_size: 24
+        size_hint_y: None
+        height: 40
+
+    Label:
+        text: 'SSID:'
+        font_size: 18
+        size_hint_y: None
+        height: 30
+
+    TextInput:
+        id: ssid_input
+        hint_text: 'Nom de votre réseau Wifi ?'
+        multiline: False
+
+    Label:
+        text: 'Mot de passe:'
+        font_size: 18
+        size_hint_y: None
+        height: 30
+
+    TextInput:
+        id: password_input
+        hint_text: 'Mot de passe du Wifi?'
+        multiline: False
+        password: True
+
+    Label:
+        text: 'Port:'
+        font_size: 18
+        size_hint_y: None
+        height: 30
+#         Color:
+#             rgb: 0.2, 0.4, 0.8  # Bleu clair (RGBA)
+
+    Spinner:
+        id: port_spinner
+        text: 'Nom du port le plus proche ?'
+        size_hint_y: None
+        height: 44
+
+
+    Label:
+        text: 'Seuil:'
+        font_size: 18
+        size_hint_y: None
+        height: 30
+
+    TextInput:
+        id: seuil_input
+        hint_text: 'Hhauteur en mètres permettant une sortie ? (ex: 4.5)'
+        multiline: False
+        input_filter: 'float'
+
+    Label:
+        text: 'Départ:'
+        font_size: 18
+        size_hint_y: None
+        height: 30
+
+    TextInput:
+        id: depart_input
+        hint_text: 'Combien de minutes avant le seuil pour préparation de la sortie ?'
+        multiline: False
+        input_filter: 'int'
+
+    Label:
+        text: 'Retour'
+        font_size: 18
+        size_hint_y: None
+        height: 30
+
+    TextInput:
+        id: retour_input
+        hint_text: 'Combien de minutes avant le seuil pour un retour tranquille ?'
+        multiline: False
+        input_filter: 'int'
+
+    Button:
+        text: 'Enregistrer'
+        size_hint_y: None
+        height: 50
+        on_press: app.submit_form()
