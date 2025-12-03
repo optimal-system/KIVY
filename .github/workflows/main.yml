@@ -63,7 +63,16 @@ jobs:
         echo "android.api = 30" >> ~/.buildozer/default.spec
         echo "android.minapi = 21" >> ~/.buildozer/default.spec
         echo "android.ndk_api = 21" >> ~/.buildozer/default.spec
+ 
+    - name: Build APK
+      run: buildozer -v --ninteractive android debug
 
+    - name: Upload APK
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: mon-application
+        path: bin/*.apk
 
     - name: Upload logs
       if: failure()
