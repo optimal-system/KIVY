@@ -7,6 +7,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container: kivy/buildozer:latest
 
     steps:
     - uses: actions/checkout@v4
@@ -78,9 +79,3 @@ jobs:
         name: mon-application
         path: bin/*.apk
 
-    - name: Upload logs
-      if: failure()
-      uses: actions/upload-artifact@v4
-      with:
-        name: buildozer-logs
-        path: .buildozer/logs/
