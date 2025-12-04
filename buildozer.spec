@@ -1,15 +1,21 @@
 [app]
-title = Horolaj
-package.name = horolaj
+title = BOMAconfiguration
+package.name = BOMAconf
 package.domain = optimal-system.com
 source.dir = .
-source.include_exts = py,kv
+source.include_exts = py,png,jpg,kv
+source.exclude_exts = spec,pyc,pyo,bin
+source.exclude_dirs = tests, bin, venv, .git
 version = 0.1
 requirements = python3,kivy
 orientation = portrait
-fullscreen = 0
-android.api = 30
-android.minapi = 21
-android.ndk = 21
-android.sdk = 30
-android.build_tools_version = 30.0.3
+
+[buildozer]
+log_level = 2
+warn_on_root = 1
+
+[android]
+arch = armeabi-v7a
+permissions = INTERNET
+private_storage = True
+accept_sdk_license = True
