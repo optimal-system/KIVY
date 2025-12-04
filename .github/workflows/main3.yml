@@ -10,6 +10,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+
     - name: Cache Android SDK and Buildozer
       id: cache
       uses: actions/cache@v3
@@ -29,27 +34,32 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
         mkdir -p $HOME/android-sdk/cmdline-tools
-        wget -q https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip
-        unzip -q commandlinetools-linux-6609375_latest.zip -d $HOME/android-sdk/cmdline-tools
-        mkdir -p $HOME/android-sdk/cmdline-tools/latest
-        mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
-
+        wget https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
+        unzip commandlinetools-linux-7583922_latest.zip -d $HOME/android-sdk/cmdline-tools/latest
+        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "ANDROID_NDK_HOME=$HOME/android-sdk/ndk/21.4.7075529" >> $GITHUB_ENV
         echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
-
-        mkdir -p $HOME/android-sdk/licenses
-        echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > $HOME/android-sdk/licenses/android-sdk-license
-
-        $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools"
-        $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-27"
-        $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "build-tools;27.0.3"
-        $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "ndk;21.4.7075529"
-        $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "tools"
+        echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+        mkdir -p $ANDROID_HOME/licenses
+        echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > $ANDROID_HOME/licenses/android-sdk-license
+        echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> $ANDROID_HOME/licenses/android-sdk-license
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "platform-tools"
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "platforms;android-30"
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "build-tools;30.0.3"
+        yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "ndk;21.4.7075529
 
     - name: Install Buildozer
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
         pip install cython buildozer
         mkdir -p ~/.buildozer/android/platform
+        echo "[global]" > ~/.buildozer/default.spec
+        echo "android.sdk = $ANDROID_HOME" >> ~/.buildozer/default.spec
+        echo "android.ndk = $ANDROID_NDK_HOME" >> ~/.buildozer/default.spec
+        echo "android.api = 30" >> ~/.buildozer/default.spec
+        echo "android.minapi = 21" >> ~/.buildozer/default.spec
+        echo "android.ndk_api = 21" >> ~/.buildozer/default.spec
+
         ln -s $HOME/android-sdk ~/.buildozer/android/platform/android-sdk
         mkdir -p $HOME/android-sdk/tools/bin
         ln -s $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager $HOME/android-sdk/tools/bin/sdkmanager
