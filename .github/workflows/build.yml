@@ -69,7 +69,7 @@ jobs:
         echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
 
     - name: Build APK
-      run: buildozer -v --ninteractive android debug
+      run: python -m  buildozer -v --ninteractive android debug
 
     - name: Upload APK
       if: success()
