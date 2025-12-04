@@ -71,7 +71,7 @@ jobs:
 
     - name: Build APK
       run: |
-        pip install buildozer
+        pip install cython buildozer
         buildozer -v android debug
 
     - name: Upload APK
