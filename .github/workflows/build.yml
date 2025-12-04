@@ -74,7 +74,9 @@ jobs:
         buildozer --version
 
     - name: Build APK
-      run: buildozer -v --ninteractive android debug
+      run: 
+          export PATH=$PATH:$HOME/.local/bin
+          buildozer -v --ninteractive android debug
 
     - name: Upload APK
       if: success()
