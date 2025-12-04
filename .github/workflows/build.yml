@@ -68,11 +68,6 @@ jobs:
         echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
         echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
 
-    - name: Verify buildozer
-      run: |
-        which buildozer
-        buildozer --version
-
     - name: Build APK
       run: 
           export PATH=$PATH:$HOME/.local/bin
