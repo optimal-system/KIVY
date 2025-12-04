@@ -16,7 +16,7 @@ jobs:
       with:
         python-version: '3.8'
 
-    - name: Cache Android SDK and Buildozer
+    - name: Cache Android SDK
       id: cache
       uses: actions/cache@v3
       with:
@@ -34,11 +34,9 @@ jobs:
     - name: Install Android SDK
       if: steps.cache.outputs.cache-hit != 'true'
       run: |
-        # Installation du SDK Android
         mkdir -p $HOME/android-sdk/cmdline-tools
         wget -q https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip
         unzip -q commandlinetools-linux-7583922_latest.zip -d $HOME/android-sdk/cmdline-tools
-        mkdir -p $HOME/android-sdk/cmdline-tools/latest
         mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
 
         # Configuration des licences
@@ -46,14 +44,20 @@ jobs:
         echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > $HOME/android-sdk/licenses/android-sdk-license
         echo "d56f5187479451eabf01fb78af6dfcb131a6481e" >> $HOME/android-sdk/licenses/android-sdk-license
 
-        # Installation des composants nécessaires
-        echo "y" | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools"
-        echo "y" | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-30"
-        echo "y" | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "build-tools;30.0.3"
-        echo "y" | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "ndk;21.4.7075529"
-        echo "y" | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "tools"
-        echo "y" | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "emulator"
+        # Configuration des variables d'environnement
+        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
 
+        # Installation des composants nécessaires
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools"
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platforms;android-30"
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;30.0.3"
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "ndk;21.4.7075529"
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "tools"
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "emulator"
+
+    - name: Configure environment
+      run: |
         # Création des répertoires nécessaires
         mkdir -p $HOME/android-sdk/tools/bin
         mkdir -p $HOME/android-sdk/build-tools/30.0.3
@@ -62,11 +66,7 @@ jobs:
         ln -sf $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager $HOME/android-sdk/tools/bin/sdkmanager
         ln -sf $HOME/android-sdk/build-tools/30.0.3/aidl $HOME/android-sdk/tools/bin/aidl
 
-    - name: Configure environment
-      run: |
         # Configuration des variables d'environnement
-        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
-        echo "ANDROID_NDK_HOME=$HOME/android-sdk/ndk/21.4.7075529" >> $GITHUB_ENV
         echo "$HOME/android-sdk/tools/bin" >> $GITHUB_PATH
         echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
         echo "$HOME/android-sdk/build-tools/30.0.3" >> $GITHUB_PATH
@@ -74,6 +74,10 @@ jobs:
         # Configuration de Buildozer
         mkdir -p ~/.buildozer/android/platform
         ln -sf $HOME/android-sdk ~/.buildozer/android/platform/android-sdk
+
+    - name: Install Buildozer
+      run: |
+        pip install cython buildozer
 
         # Création du fichier de configuration par défaut pour Buildozer
         mkdir -p ~/.buildozer
@@ -83,10 +87,6 @@ jobs:
         echo "android.api = 30" >> ~/.buildozer/default.spec
         echo "android.minapi = 21" >> ~/.buildozer/default.spec
         echo "android.ndk_api = 21" >> ~/.buildozer/default.spec
-
-    - name: Install Buildozer
-      run: |
-        pip install cython buildozer
 
     - name: Verify AIDL installation
       run: |
