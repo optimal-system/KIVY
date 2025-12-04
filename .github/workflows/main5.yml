@@ -20,10 +20,10 @@ jobs:
       id: cache
       uses: actions/cache@v3
       with:
-        path: |
-          ~/android-sdk
-          ~/.buildozer
-        key: android-sdk-buildozer-${{ hashFiles('buildozer.spec') }}
+        path: ~/.ccache
+        key: ccache-${{ runner.os }}-${{ hashFiles('buildozer.spec') }}
+        restore-keys: |
+          ccache-${{ runner.os }}-
 
     - name: Install dependencies
       if: steps.cache.outputs.cache-hit != 'true'
@@ -94,7 +94,19 @@ jobs:
 #        aidl --version
 
     - name: Build APK
-      run: buildozer -v android debug
+      run: |
+        # Configuration spécifique pour éviter les erreurs de build
+        export USE_CCACHE=1
+        export CCACHE_MAXSIZE=2G
+        export CCACHE_COMPRESS=1
+        export CCACHE_DIR=$HOME/.ccache
+
+        # Lancement de la build avec des options adaptées
+        buildozer -v android debug \
+          --private $HOME/.local \
+          --state-continue \
+          --color=always
+
 
     - name: Upload APK
       if: success()
