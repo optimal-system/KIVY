@@ -88,10 +88,10 @@ jobs:
         echo "android.minapi = 21" >> ~/.buildozer/default.spec
         echo "android.ndk_api = 21" >> ~/.buildozer/default.spec
 
-    - name: Verify AIDL installation
-      run: |
-        which aidl
-        aidl --version
+#    - name: Verify AIDL installation
+#      run: |
+#        which aidl
+#        aidl --version
 
     - name: Build APK
       run: buildozer -v android debug
