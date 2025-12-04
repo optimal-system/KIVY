@@ -70,7 +70,7 @@ jobs:
         echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
 
     - name: Configure Buildozer
-        run: |
+      run: |
         pip install cython buildozer
         
         echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
