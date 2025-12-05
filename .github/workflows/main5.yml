@@ -92,7 +92,12 @@ jobs:
 #        which aidl
 #        aidl --version
 
-        - name: Install additional dependencies
+      - name: Install additional dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5
+
+      - name: Install additional dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5
@@ -109,7 +114,6 @@ jobs:
           --private $HOME/.local \
           --state-continue \
           --color=always
-
 
     - name: Upload APK
       if: success()
