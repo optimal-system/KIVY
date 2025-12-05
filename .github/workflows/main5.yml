@@ -92,12 +92,16 @@ jobs:
 #        which aidl
 #        aidl --version
 
+        - name: Install additional dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5
+
     - name: Build APK
       run: |
-        # Configuration spécifique pour éviter les erreurs de build
+        # Configuration pour éviter les erreurs de build
         export USE_CCACHE=1
         export CCACHE_MAXSIZE=2G
-        export CCACHE_COMPRESS=1
         export CCACHE_DIR=$HOME/.ccache
 
         # Lancement de la build avec des options adaptées
