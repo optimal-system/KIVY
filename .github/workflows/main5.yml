@@ -73,7 +73,7 @@ jobs:
         # Configuration de Buildozer
         mkdir -p ~/.buildozer/android/platform
         ln -sf $HOME/android-sdk ~/.buildozer/android/platform/android-sdk
-
+        
     - name: Install Buildozer
       run: |
         pip install cython buildozer
@@ -87,17 +87,17 @@ jobs:
         echo "android.minapi = 21" >> ~/.buildozer/default.spec
         echo "android.ndk_api = 21" >> ~/.buildozer/default.spec
 
-#    - name: Verify AIDL installation
+#   - name: Verify AIDL installation
 #      run: |
 #        which aidl
 #        aidl --version
 
-      - name: Install additional dependencies
+    - name: Install additional dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5
 
-      - name: Install additional dependencies
+    - name: Install additional dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5
